@@ -1,6 +1,6 @@
 <%- include('header.ejs') %>
     <%- include('sidebar.ejs') %>
-
+    <div class="add">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-md-8 mx-5 mt-5">
@@ -16,9 +16,9 @@
                     </div>
                 </div>
             </div>
-            <div class="row r2 justify-content-center">
+            <!-- <div class="row r2 justify-content-center"> -->
 
-                <table class="table item-table">
+                <table class="table item-table mt-5 mx-3">
                     <thead>
                         <tr>
                             <th>#</th>
@@ -32,11 +32,15 @@
                     <tbody id="billing-body" class="billing-body">
                     </tbody>
                 </table>
-            </div>
-            <div>
-                <h2>Grand Total:<span class="grand-total">0</span></h2>
+            <!-- </div> -->
+            <div class="cardg mx-5 mt-5">
+                            <div class="card-body">
+                                 <div class="">
+                <h4>Grand Total:<span class="grand-total">0</span></h4>
 
             </div>
+                            </div>
+                             </div>
             <div class="row justify-content-end">
                 <div class="col-3 mt-3">
                     <button class="btn btn-warning">Print</button>
@@ -70,7 +74,7 @@
             </div>
             </form>
         </div>
-
+        </div>
         <script>
             const allProducts = <%- JSON.stringify(products) %>;
             const search = document.getElementById("input-datalist");
@@ -135,7 +139,7 @@
     </td>
     <td>${product.price}</td>
     <td>
-        <input type="number" name="quantity[]" value="1" min="1" class="form-control qty-input">
+        <input type="number" name="quantity[]" value="1" min="1" class="qty-input">
     </td>
     <td><button class="btn btn-danger btn-sm delete-btn">X</button></td>
     <td class="total">${product.price}</td>
