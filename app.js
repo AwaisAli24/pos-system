@@ -1,10 +1,12 @@
 const express = require("express");
 const pg = require("pg");
 const methodOverride = require("method-override");
+const dotenv = require('dotenv');
 
 const PORT = 3000;
 
 const app = express();
+dotenv.config();
 
 app.use(express.urlencoded());
 app.use(methodOverride("_method"));
@@ -24,11 +26,11 @@ const options = {
 const formattedDate = now.toLocaleString("en-US", options);
 
 const db = new pg.Client({
-  user: "postgres",
-  host: "localhost",
-  database: "pos",
-  password: "awais123",
-  port: 5432,
+  user: process.env.USER,
+  host: process.env.HOST,
+  database: process.env.DATABASE,
+  password: process.env.PASSWORD,
+  port: process.env.DBPORT,
 });
 db.connect();
 
