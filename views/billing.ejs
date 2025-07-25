@@ -1,0 +1,193 @@
+<%- include('header.ejs') %>
+    <%- include('sidebar.ejs') %>
+
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8 mx-5 mt-5">
+                    <div class="form-group">
+                        <label for="input-datalist">Enter:</label>
+                        <input type="text" class="form-control" placeholder="Search item" list="list-timezone"
+                            id="input-datalist" autofocus>
+                        <datalist id="list-timezone">
+                            <% products.forEach((product)=> { %>
+                                <option value="<%= product.id %>"></option>
+                                <% }); %>
+                        </datalist>
+                    </div>
+                </div>
+            </div>
+            <div class="row r2 justify-content-center">
+
+                <table class="table item-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Product Name</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Delete</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="billing-body" class="billing-body">
+                    </tbody>
+                </table>
+            </div>
+            <div>
+                <h2>Grand Total:<span class="grand-total">0</span></h2>
+
+            </div>
+            <div class="row justify-content-end">
+                <div class="col-3 mt-3">
+                    <button class="btn btn-warning">Print</button>
+                    <button type="button" class="btn btn-primary editbtn checkout" data-bs-toggle="modal"
+                        data-bs-target="#checkmodal">
+                        Checkout
+                    </button>
+                </div>
+            </div>
+            <div class="modal fade" id="checkmodal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Checkout</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form action="/billing/add" method="post">
+                            <div class="modal-body">
+
+                            </div>
+                            <div class="modal-footer">
+                                <h2>Grand Total:<span class="grand-total1">0</span></h2>
+                                <input type="hidden" name="total" class="total-price" value="0">
+                                <button type="submit" class="btn btn-secondary" data-bs-dismiss="modal">
+                                    Confirm
+                                </button>
+                            </div>
+                    </div>
+                </div>
+            </div>
+            </form>
+        </div>
+
+        <script>
+            const allProducts = <%- JSON.stringify(products) %>;
+            const search = document.getElementById("input-datalist");
+            const tableBody = document.getElementById("billing-body");
+            const addedProducts = {};
+            const total = document.querySelector(".grand-total");
+            const totalPrice = document.querySelector(".total-price")
+            const itemTable = document.querySelector(".item-table");
+            const modalBody = document.querySelector(".modal-body");
+            const checkout = document.querySelector(".checkout");
+            const grandTotal1 = document.querySelector(".grand-total1");
+
+            search.addEventListener("keydown", (e) => {
+                if (e.key === "Enter") {
+                    const input = search.value.trim();
+                    if (!input) return;
+
+                    const product = allProducts.find(p => p.id === input);
+
+                    if (!product) {
+                        alert("Product not found!");
+                        search.value = "";
+                        return;
+                    }
+
+                    if (addedProducts[product.id]) {
+                        // Get the existing row
+                        const existingRow = tableBody.querySelector(`tr[data-id='${product.id}']`);
+                        const qtyInput = existingRow.querySelector(".qty-input");
+                        let currentQty = parseInt(qtyInput.value);
+
+                        if (currentQty < product.quantity) {
+                            qtyInput.value = currentQty + 1;
+                            const newTotal = (currentQty + 1) * product.price;
+                            existingRow.querySelector(".total").textContent = newTotal;
+                            updatePrice();
+                        } else {
+                            alert("Maximum quantity reached for this product.");
+                        }
+
+                        search.value = "";
+                        return;
+                    }
+
+                    console.log(product);
+
+                    if (product.quantity <= 0) {
+                        alert("Product is not available");
+                        search.value = "";
+                        return;
+                    }
+                    addedProducts[product.id] = true;
+
+                    const row = document.createElement("tr");
+                    row.setAttribute("data-id", product.id); // Add this line
+
+                    row.innerHTML = `
+    <td>${tableBody.children.length + 1}</td>
+    <td>
+        ${product.name}
+        <input type="hidden" name="item[]" value="${product.id}">
+    </td>
+    <td>${product.price}</td>
+    <td>
+        <input type="number" name="quantity[]" value="1" min="1" class="form-control qty-input">
+    </td>
+    <td><button class="btn btn-danger btn-sm delete-btn">X</button></td>
+    <td class="total">${product.price}</td>
+`;
+
+                    // Handle delete
+                    row.querySelector(".delete-btn").addEventListener("click", () => {
+                        delete addedProducts[product.id];
+                        row.remove();
+                        updatePrice();
+                        updateRowNumbers();
+                    });
+
+                    // Handle quantity change
+                    row.querySelector(".qty-input").addEventListener("input", (e) => {
+                        const qty = parseInt(e.target.value) || 0;
+                        if (qty > product.quantity) {
+                            alert("Product is not available reduce the quantity");
+                            e.target.value = product.quantity;
+                            return;
+                        }
+                        row.querySelector(".total").textContent = qty * product.price;
+                        updatePrice()
+                    });
+
+                    tableBody.appendChild(row);
+                    search.value = "";
+                }
+                updatePrice();
+            });
+
+            function updateRowNumbers() {
+                const rows = tableBody.querySelectorAll("tr");
+                rows.forEach((row, index) => {
+                    row.children[0].textContent = index + 1;
+                });
+            }
+            function updatePrice() {
+                const priceRows = document.querySelectorAll(".total");
+                let grandTotal = 0;
+                priceRows.forEach((price) => {
+                    grandTotal += (parseInt(price.innerText));
+                })
+                total.innerText = grandTotal;
+                totalPrice.value = grandTotal;
+                return grandTotal;
+            }
+            checkout.addEventListener("click", () => {
+                modalBody.appendChild(itemTable);
+                grandTotal1.innerText = updatePrice();
+                itemTable.removeChild();
+            })
+        </script>
+
+        <%- include('footer.ejs') %>
