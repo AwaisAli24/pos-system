@@ -192,6 +192,9 @@ app.get("/dashboard", async (req, res) => {
     lessProducts: lessProducts.rows
   });
 });
+app.get("/login",(req,res)=>{
+  res.render("login.ejs")
+})
 app.listen(PORT, () => {
   console.log(`Server listening at port ${PORT}`);
 });
