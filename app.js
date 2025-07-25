@@ -26,11 +26,11 @@ const options = {
 const formattedDate = now.toLocaleString("en-US", options);
 
 const db = new pg.Client({
-  user: process.env.USER,
+  user: process.env.USER1,
   host: process.env.HOST,
   database: process.env.DATABASE,
   password: process.env.PASSWORD,
-  port: process.env.DBPORT,
+  port: Number(process.env.DBPORT),
 });
 db.connect();
 
