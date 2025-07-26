@@ -194,6 +194,10 @@ app.get("/dashboard", async (req, res) => {
 });
 app.get("/login",(req,res)=>{
   res.render("login.ejs",{title:"Login"})
+});
+app.post("/login",async(req,res)=>{
+  const {username,password} = req.body;
+  
 })
 app.listen(PORT, () => {
   console.log(`Server listening at port ${PORT}`);
