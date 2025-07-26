@@ -2,6 +2,8 @@ const express = require("express");
 const pg = require("pg");
 const methodOverride = require("method-override");
 const dotenv = require('dotenv');
+const bcrypt = require("bcrypt");
+const session = require("express-session");
 
 const PORT = 3000;
 
@@ -11,6 +13,13 @@ dotenv.config();
 app.use(express.urlencoded());
 app.use(methodOverride("_method"));
 app.use(express.static("public"));
+app.use(session({
+  secret: "yourSecretKey",
+  resave: false,
+  saveUninitialized: false,
+  cookie: { secure: false }
+}));
+
 
 const now = new Date();
 
@@ -34,11 +43,28 @@ const db = new pg.Client({
 });
 db.connect();
 
+function isLoggedIn(req, res, next) {
+  if (req.session.user) {
+    next();
+  } else {
+    res.redirect("/login");
+  }
+}
+
+function isAdmin(req, res, next) {
+  if (req.session.user && req.session.user.isAdmin) {
+    next();
+  } else {
+    res.send("Access denied: Admins only");
+  }
+}
+
+
 // Inventory routes
 app.get("/", (req, res) => {
   res.render("index.ejs");
 });
-app.get("/product/view", async (req, res) => {
+app.get("/product/view",isAdmin ,async (req, res) => {
   const data = await db.query("Select * FROM products");
   let products = data.rows;
   products.sort((a, b) =>
@@ -46,7 +72,7 @@ app.get("/product/view", async (req, res) => {
   );
   res.render("index.ejs", { products, title: "Inventory" });
 });
-app.post("/product/add", async (req, res) => {
+app.post("/product/add",isAdmin ,async (req, res) => {
   console.log(req.body);
   const { id, name, price, quantity } = req.body;
   const query = await db.query(
@@ -55,7 +81,7 @@ app.post("/product/add", async (req, res) => {
   );
   res.redirect("/product/view");
 });
-app.post("/product/quantity/add", async (req, res) => {
+app.post("/product/quantity/add",isAdmin ,async (req, res) => {
   console.log(req.body);
   const id = req.body.id;
   const addedQuantity = parseInt(req.body.addedQuantity);
@@ -71,7 +97,7 @@ app.post("/product/quantity/add", async (req, res) => {
   ]);
   res.redirect("/product/view");
 });
-app.put("/product/:id", async (req, res) => {
+app.put("/product/:id",isAdmin ,async (req, res) => {
   const id = req.params.id;
   const { name, price, quantity } = req.body;
   const query = await db.query(
@@ -80,7 +106,7 @@ app.put("/product/:id", async (req, res) => {
   );
   res.redirect("/product/view");
 });
-app.delete("/product/:id", async (req, res) => {
+app.delete("/product/:id",isAdmin ,async (req, res) => {
   const id = parseInt(req.params.id);
   const query = await db.query("UPDATE products SET quantity=$1 WHERE id=$2", [
     0,
@@ -91,7 +117,7 @@ app.delete("/product/:id", async (req, res) => {
 //Sale Routes
 
 //Add Sale (Billing)
-app.post("/billing/add", async (req, res) => {
+app.post("/billing/add",isLoggedIn ,async (req, res) => {
   console.log(req.body);
 
   let items = req.body["item[]"];
@@ -131,12 +157,12 @@ app.post("/billing/add", async (req, res) => {
   res.redirect("/billing");
 });
 //Get all sale record
-app.get("/sale/get", async (req, res) => {
+app.get("/sale/get",isAdmin ,async (req, res) => {
   const data = await db.query("SELECT * FROM sales");
   res.render("sales.ejs", { sales: data.rows, title: "Sales" });
 });
 //Get a specific sale record
-app.get("/sale/get/:id", async (req, res) => {
+app.get("/sale/get/:id",isAdmin ,async (req, res) => {
   const id = req.params.id;
   let data = await db.query("SELECT * FROM sale_item WHERE sale_id=$1", [id]);
   console.log(data.rows);
@@ -161,12 +187,12 @@ app.get("/sale/get/:id", async (req, res) => {
     title: "Sales",
   });
 });
-app.get("/billing", async (req, res) => {
+app.get("/billing",isLoggedIn ,async (req, res) => {
   let data = await db.query("SELECT * FROM products");
   res.render("billing.ejs", { products: data.rows, title: "Billing" });
 });
 // Dashboard
-app.get("/dashboard", async (req, res) => {
+app.get("/dashboard",isLoggedIn ,async (req, res) => {
   const dailySale = await db.query(
     "SELECT SUM(amount),COUNT(id) FROM sales WHERE date >=CURRENT_DATE;"
   );
@@ -195,9 +221,55 @@ app.get("/dashboard", async (req, res) => {
 app.get("/login",(req,res)=>{
   res.render("login.ejs",{title:"Login"})
 });
-app.post("/login",async(req,res)=>{
-  const {username,password} = req.body;
-  
+app.post("/login", async (req, res) => {
+  const { username, password } = req.body;
+
+  const result = await db.query("SELECT * FROM users WHERE username=$1", [username]);
+
+  if (result.rows.length === 0) {
+    return res.send("User not found");
+  }
+
+  const user = result.rows[0];
+
+  const match = await bcrypt.compare(password, user.password);
+
+  if (match) {
+    req.session.user = {
+      id: user.id,
+      username: user.username,
+      isAdmin: user.isadmin
+    };
+    return res.redirect("/dashboard");
+  } else {
+    return res.send("Invalid password");
+  }
+});
+app.get("/seed",async(req,res)=>{
+  const adminUsername = "admin";
+  const userUsername = "user";
+
+  const adminPassword = await bcrypt.hash("admin123", 10);
+  const userPassword = await bcrypt.hash("user123", 10);
+
+  try {
+    // Check if already exists
+    const existing = await db.query("SELECT * FROM users WHERE username IN ($1, $2)", [adminUsername, userUsername]);
+
+    const usernames = existing.rows.map(row => row.username);
+
+    if (!usernames.includes(adminUsername)) {
+      await db.query("INSERT INTO users (username, password, isAdmin) VALUES ($1, $2, $3)", [adminUsername, adminPassword, true]);
+      console.log("Admin seeded");
+    }
+
+    if (!usernames.includes(userUsername)) {
+      await db.query("INSERT INTO users (username, password, isAdmin) VALUES ($1, $2, $3)", [userUsername, userPassword, false]);
+      console.log("User seeded");
+    }
+  } catch (err) {
+    console.error("Error seeding users:", err);
+  }
 })
 app.listen(PORT, () => {
   console.log(`Server listening at port ${PORT}`);
