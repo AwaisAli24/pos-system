@@ -270,6 +270,10 @@ app.get("/seed",async(req,res)=>{
   } catch (err) {
     console.error("Error seeding users:", err);
   }
+});
+app.post("/logout",(req,res)=>{
+  req.session.destroy();
+  res.redirect("/login");
 })
 app.listen(PORT, () => {
   console.log(`Server listening at port ${PORT}`);

@@ -14,9 +14,10 @@ body {
 .banner {
     height: 15%;
     width: 100%;
-    display: flex;
+    text-align: center;
+    /* display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: center; */
     background-color: #656565;
 }
 
