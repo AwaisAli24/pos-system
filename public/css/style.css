@@ -110,6 +110,7 @@ button a {
 
 .card {
     width: 18rem;
+    
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
@@ -169,4 +170,6 @@ button a {
 .card-button{
     border: none;
 }
-   
+.payment{
+    display: none;
+}

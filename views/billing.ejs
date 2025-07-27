@@ -65,7 +65,23 @@
 
                             </div>
                             <div class="modal-footer">
-                                <h2>Grand Total:<span class="grand-total1">0</span></h2>
+                                <h5>Grand Total:<span class="grand-total1">0</span></h5>
+                                <div class="form-check">
+  <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+  <label class="form-check-label" for="flexRadioDefault1">
+    Online
+  </label>
+</div>
+<div class="form-check">
+  <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
+  <label class="form-check-label" for="flexRadioDefault2">
+    Cash
+  </label>
+</div>
+<div class="mb-3 payment">
+  <input type="text" class="form-control mt-2 " id="exampleFormControlInput1" placeholder=" Enter Name" name="name">
+  <input type="text" class="form-control mt-2" id="exampleFormControlInput1" placeholder=" Enter Phone" name="phone">
+</div>
                                 <input type="hidden" name="total" class="total-price" value="0">
                                 <button type="submit" class="btn btn-secondary" data-bs-dismiss="modal">
                                     Confirm
@@ -193,6 +209,15 @@
                 modalBody.appendChild(itemTable);
                 grandTotal1.innerText = updatePrice();
                 itemTable.removeChild();
+            })
+            let online= document.querySelector("#flexRadioDefault1");
+            let payment= document.querySelector(".payment");
+            let cash=document.querySelector("#flexRadioDefault2");
+            online.addEventListener("click",()=>{
+                payment.style.display="block";
+            })
+            cash.addEventListener("click",()=>{
+                 payment.style.display="none";
             })
         </script>
 
