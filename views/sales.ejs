@@ -1,13 +1,15 @@
 <%- include('./header.ejs') %>
     <%- include('./sidebar.ejs') %>
         <div class="add">
+            <div class="row">
+                <div class="col-md-6">
             <table class="table mt-5">
                 <thead>
                     <tr>
-                        <th scope="col">sale-id</th>
+                        <th scope="col">#</th>
                         <th scope="col" colspan="2">Date</th>
                         <th scope="col" colspan="1">Amount</th>
-                        <th scope="col">View Info</th>
+                        <th scope="col">View</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -29,6 +31,20 @@
                         <%});%>
                 </tbody>
             </table>
+
+            </div>
+            <div class="col-md-6">
+                 <table class="table mt-5">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col" colspan="2">Name</th>
+                        <th scope="col" colspan="1">Phone </th>
+                        <th scope="col">View</th>
+                    </tr>
+                </thead>
+                </table>
+            </div>
         </div>
         </div>
         <%- include('footer.ejs') %>

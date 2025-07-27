@@ -3,18 +3,20 @@
     <div class="add">
         <div class="container">
             <div class="row justify-content-center">
-                <div class="col-md-8 mx-5 mt-5">
+                <div class="col-md-10 mx-5 mt-5">
                     <div class="form-group">
                         <label for="input-datalist">Enter:</label>
-                        <input type="text" class="form-control" placeholder="Search item" list="list-timezone"
-                            id="input-datalist" autofocus>
-                        <datalist id="list-timezone">
+                        <div class="search-box">
+                        <input type="text" class="form-control" placeholder="Search item" name="Search" list="list-timezone"
+                            id="input-datalist" autofocus> 
+                        <datalist id="list-timezone" >
                             <% products.forEach((product)=> { %>
                                 <option value="<%= product.id %>"></option>
                                 <% }); %>
                         </datalist>
                     </div>
-                </div>
+                    </div>
+            </div>
             </div>
             <!-- <div class="row r2 justify-content-center"> -->
 
