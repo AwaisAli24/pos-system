@@ -4,6 +4,8 @@
             <div class="row cards mt-5 mx-5">
                 <div class="col-md-12">
                     <div class="d-flex flex-row cards">
+                      <form action="/currentdaysale" method="get">
+                        <button type="submit" class="card-button">
                         <div class="card">
                             <h4 class="card-header bg-primary">Current Day</h4>
                             <div class="card-body">
@@ -19,6 +21,10 @@
                                 </div>
                             </div>
                         </div>
+                        </button>
+                        </form>
+                        <form action="/weeksale" method="get">
+                        <button type="submit" class="card-button">
                         <div class="card mx-5">
                             <h4 class="card-header bg-primary">7 Days</h4>
                             <div class="card-body">
@@ -34,6 +40,10 @@
                                 </div>
                             </div>
                         </div>
+                        </button>
+                        </form>
+                        <form action="/monthsale" method="get">
+                        <button type="submit" class="card-button">
                         <div class="card mx-5">
                             <h4 class="card-header bg-primary">30 Days</h4>
                             <div class="card-body">
@@ -49,6 +59,8 @@
                                 </div>
                             </div>
                         </div>
+                        </button>
+                        </form>
                     </div>
                 </div>
             </div>
