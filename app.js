@@ -274,7 +274,20 @@ app.get("/seed",async(req,res)=>{
 app.post("/logout",(req,res)=>{
   req.session.destroy();
   res.redirect("/login");
+});
+app.get("/currentdaysale",async(req,res)=>{
+  const data = await db.query("SELECT * FROM sales WHERE date >=CURRENT_DATE;");
+  res.render("sales.ejs", { sales: data.rows, title: "Today's Sale" });
 })
+app.get("/weeksale",async(req,res)=>{
+  const data = await db.query("SELECT * FROM sales WHERE date >= CURRENT_DATE - INTERVAL '7 days'");
+  res.render("sales.ejs", { sales: data.rows, title: "7 Days sale" });
+})
+app.get("/monthsale",async(req,res)=>{
+  const data = await db.query("SELECT * FROM sales WHERE date >= CURRENT_DATE - INTERVAL '30 days';");
+  res.render("sales.ejs", { sales: data.rows, title: "Monthly sale" });
+})
+
 app.listen(PORT, () => {
   console.log(`Server listening at port ${PORT}`);
 });
