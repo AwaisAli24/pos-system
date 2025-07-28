@@ -278,16 +278,39 @@ app.post("/logout",(req,res)=>{
 app.get("/currentdaysale",async(req,res)=>{
   const data = await db.query("SELECT * FROM sales WHERE date >=CURRENT_DATE;");
   res.render("sales.ejs", { sales: data.rows, title: "Today's Sale" });
-})
+});
 app.get("/weeksale",async(req,res)=>{
   const data = await db.query("SELECT * FROM sales WHERE date >= CURRENT_DATE - INTERVAL '7 days'");
   res.render("sales.ejs", { sales: data.rows, title: "7 Days sale" });
-})
+});
 app.get("/monthsale",async(req,res)=>{
   const data = await db.query("SELECT * FROM sales WHERE date >= CURRENT_DATE - INTERVAL '30 days';");
   res.render("sales.ejs", { sales: data.rows, title: "Monthly sale" });
-})
-
+});
+app.get("/daysale/cash",async(req,res)=>{
+  const data = await db.query("SELECT * FROM sales WHERE iscash=true WHERE date >=CURRENT_DATE;")
+  res.render("sales.ejs", { sales: data.rows, title: "Today's Cash Sale" });
+});
+app.get("/daysale/online",async(req,res)=>{
+  const data = await db.query("SELECT * FROM sales WHERE iscash=false WHERE date >=CURRENT_DATE;")
+  res.render("sales.ejs", { sales: data.rows, title: "Today's online Sale" });
+});
+app.get("/weeksale/cash",async(req,res)=>{
+  const data = await db.query("SELECT * FROM sales WHERE date >= CURRENT_DATE - INTERVAL '7 days'")
+  res.render("sales.ejs", { sales: data.rows, title: "Week's Cash Sale" });
+});
+app.get("/weeksale/online",async(req,res)=>{
+  const data = await db.query("SELECT * FROM sales WHERE date >= CURRENT_DATE - INTERVAL '7 days'")
+  res.render("sales.ejs", { sales: data.rows, title: "Week's online Sale" });
+});
+app.get("/monthsale/cash",async(req,res)=>{
+  const data = await db.query("SELECT * FROM sales WHERE date >= CURRENT_DATE - INTERVAL '30 days';")
+  res.render("sales.ejs", { sales: data.rows, title: "Week's Cash Sale" });
+});
+app.get("/monthsale/online",async(req,res)=>{
+  const data = await db.query("SELECT * FROM sales WHERE date >= CURRENT_DATE - INTERVAL '30 days';")
+  res.render("sales.ejs", { sales: data.rows, title: "Week's online Sale" });
+});
 app.listen(PORT, () => {
   console.log(`Server listening at port ${PORT}`);
 });

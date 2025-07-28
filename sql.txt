@@ -4,3 +4,5 @@ CREATE TABLE users(
     password TEXT NOT NULL,
     isAdmin BOOLEAN NOT NULL
 )
+ALTER TABLE sales
+ADD COLUMN iscash BOOLEAN;
