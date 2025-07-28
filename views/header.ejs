@@ -21,14 +21,14 @@
   <body>
     <div class="container-fluid banner">
       <div class="row">
-        <div class="col-1"><img src="/assets/logo.png" alt="" class="logo mt-2"></div>
+        <div class="col-1"><img src="/assets/logo.png" alt="" class="logo mx-2 mt-2"></div>
         <div class="col-10">
         <h1 class="mt-4"><%=title%></h1>
         </div>
         <%if(title!=="Login"){ %>
         <div class="col-1 align">
           <form action="/logout" method="post">
-        <button class="mt-5 btn btn-danger" type="submit">Logout</button>
+        <button class="mt-4 btn btn-danger" type="submit">Logout</button>
         </form>
       </div>
       <%}%>

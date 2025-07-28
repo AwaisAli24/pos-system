@@ -276,23 +276,30 @@ app.post("/logout",(req,res)=>{
   res.redirect("/login");
 });
 app.get("/currentdaysale",async(req,res)=>{
-  const data = await db.query("SELECT * FROM sales WHERE date >=CURRENT_DATE;");
-  res.render("sales.ejs", { sales: data.rows, title: "Today's Sale" });
+  const data = await db.query("SELECT * FROM sales WHERE date >=CURRENT_DATE");
+  const cashTotal = await db.query("SELECT SUM(amount),count(id) FROM sales WHERE date >=CURRENT_DATE and iscash=true;;");
+  const mobileTotal = await db.query("SELECT SUM(amount),count(id) FROM sales WHERE date >=CURRENT_DATE and iscash=false;");
+  
+  res.render("sales.ejs", { sales: data.rows,cashSum:cashTotal.rows[0],mobileSum:mobileTotal.rows[0] ,flag:1, title: "Today's Sale"});
 });
 app.get("/weeksale",async(req,res)=>{
   const data = await db.query("SELECT * FROM sales WHERE date >= CURRENT_DATE - INTERVAL '7 days'");
-  res.render("sales.ejs", { sales: data.rows, title: "7 Days sale" });
+  const cashTotal = await db.query("SELECT SUM(amount),count(id) FROM sales WHERE date >= CURRENT_DATE - INTERVAL '7 days' and iscash=true;");
+  const mobileTotal = await db.query("SELECT SUM(amount),count(id) FROM sales WHERE date >= CURRENT_DATE - INTERVAL '7 days' and iscash=false;");
+  res.render("sales.ejs", { sales: data.rows, cashSum:cashTotal.rows[0],mobileSum:mobileTotal.rows[0] ,flag:1,title: "Weekly sale" });
 });
 app.get("/monthsale",async(req,res)=>{
   const data = await db.query("SELECT * FROM sales WHERE date >= CURRENT_DATE - INTERVAL '30 days';");
-  res.render("sales.ejs", { sales: data.rows, title: "Monthly sale" });
+  const cashTotal = await db.query("SELECT SUM(amount),count(id) FROM sales WHERE date >= CURRENT_DATE - INTERVAL '30 days' and iscash=true;");
+  const mobileTotal = await db.query("SELECT SUM(amount),count(id) FROM sales WHERE date >= CURRENT_DATE - INTERVAL '30 days' and iscash=false;");
+  res.render("sales.ejs", { sales: data.rows, cashSum:cashTotal.rows[0],mobileSum:mobileTotal.rows[0] ,flag:1,title: "Monthly sale" });
 });
 app.get("/daysale/cash",async(req,res)=>{
-  const data = await db.query("SELECT * FROM sales WHERE iscash=true WHERE date >=CURRENT_DATE;")
+  const data = await db.query("SELECT * FROM sales WHERE iscash=true WHERE date >=CURRENT_DATE and iscash=true;")
   res.render("sales.ejs", { sales: data.rows, title: "Today's Cash Sale" });
 });
 app.get("/daysale/online",async(req,res)=>{
-  const data = await db.query("SELECT * FROM sales WHERE iscash=false WHERE date >=CURRENT_DATE;")
+  const data = await db.query("SELECT * FROM sales WHERE iscash=false WHERE date >=CURRENT_DATE and iscash=false;")
   res.render("sales.ejs", { sales: data.rows, title: "Today's online Sale" });
 });
 app.get("/weeksale/cash",async(req,res)=>{

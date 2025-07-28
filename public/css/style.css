@@ -23,6 +23,7 @@ body {
 .logo{
     height: 80px;
     width: 80px;
+    border-radius: 50%;
 }
 
 .side-bar {
@@ -57,7 +58,7 @@ li {
 }
 
 .add {
-    width: 85%;
+    width: 83%;
 }
 
 .items {
