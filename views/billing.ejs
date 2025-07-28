@@ -38,17 +38,26 @@
             <div class="cardg mx-5 mt-5">
                             <div class="card-body">
                                  <div class="">
-                <h4>Grand Total:<span class="grand-total">0</span></h4>
+                <h4><svg xmlns="http://www.w3.org/2000/svg" width="25" height="30" fill="green" class="bi bi-currency-rupee" viewBox="0 0 16 16">
+  <path d="M4 3.06h2.726c1.22 0 2.12.575 2.325 1.724H4v1.051h5.051C8.855 7.001 8 7.558 6.788 7.558H4v1.317L8.437 14h2.11L6.095 8.884h.855c2.316-.018 3.465-1.476 3.688-3.049H12V4.784h-1.345c-.08-.778-.357-1.335-.793-1.732H12V2H4z"/>
+</svg>Grand Total:<span class="grand-total">0</span></h4>
 
             </div>
                             </div>
                              </div>
             <div class="row justify-content-end">
                 <div class="col-3 mt-3">
-                    <button class="btn btn-warning">Print</button>
+                    <button class="btn btn-warning">Print<svg xmlns="http://www.w3.org/2000/svg" width="20" height="25" fill="green" class="bi bi-printer mx-2" viewBox="0 0 16 16">
+  <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1"/>
+  <path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1"/>
+</svg></button>
                     <button type="button" class="btn btn-primary editbtn checkout" data-bs-toggle="modal"
                         data-bs-target="#checkmodal">
                         Checkout
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="25" fill="white" class="bi bi-bag-check" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M10.854 8.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 0 1 .708-.708L7.5 10.793l2.646-2.647a.5.5 0 0 1 .708 0"/>
+  <path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1m3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4zM2 5h12v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1z"/>
+</svg>
                     </button>
                 </div>
             </div>
@@ -65,10 +74,30 @@
 
                             </div>
                             <div class="modal-footer">
-                                <h2>Grand Total:<span class="grand-total1">0</span></h2>
+                                <h5><svg xmlns="http://www.w3.org/2000/svg" width="25" height="30" fill="green" class="bi bi-currency-rupee" viewBox="0 0 16 16">
+  <path d="M4 3.06h2.726c1.22 0 2.12.575 2.325 1.724H4v1.051h5.051C8.855 7.001 8 7.558 6.788 7.558H4v1.317L8.437 14h2.11L6.095 8.884h.855c2.316-.018 3.465-1.476 3.688-3.049H12V4.784h-1.345c-.08-.778-.357-1.335-.793-1.732H12V2H4z"/>
+</svg>Grand Total:<span class="grand-total1">0</span></h5>
+                                <div class="form-check">
+  <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+  <label class="form-check-label" for="flexRadioDefault1">
+    Online
+  </label>
+</div>
+<div class="form-check">
+  <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
+  <label class="form-check-label" for="flexRadioDefault2">
+    Cash
+  </label>
+</div>
+<div class="mb-3 payment">
+  <input type="text" class="form-control mt-2 " id="exampleFormControlInput1" placeholder=" Enter Name" name="name">
+  <input type="text" class="form-control mt-2" id="exampleFormControlInput1" placeholder=" Enter Phone" name="phone">
+</div>
                                 <input type="hidden" name="total" class="total-price" value="0">
                                 <button type="submit" class="btn btn-secondary" data-bs-dismiss="modal">
-                                    Confirm
+                                    Confirm <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="yellowgreen" class="bi bi-check-lg" viewBox="0 0 16 16">
+  <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z"/>
+</svg>
                                 </button>
                             </div>
                     </div>
@@ -193,6 +222,15 @@
                 modalBody.appendChild(itemTable);
                 grandTotal1.innerText = updatePrice();
                 itemTable.removeChild();
+            })
+            let online= document.querySelector("#flexRadioDefault1");
+            let payment= document.querySelector(".payment");
+            let cash=document.querySelector("#flexRadioDefault2");
+            online.addEventListener("click",()=>{
+                payment.style.display="block";
+            })
+            cash.addEventListener("click",()=>{
+                 payment.style.display="none";
             })
         </script>
 

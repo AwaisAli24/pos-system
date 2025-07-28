@@ -20,6 +20,10 @@ body {
     align-items: center; */
     background-color: #656565;
 }
+.logo{
+    height: 100px;
+    width: 100px;
+}
 
 .side-bar {
     width: 15%;
@@ -163,10 +167,10 @@ button a {
 .qty-input{
     width: 100px;
 }
-.l1{
-    
-}
 .card-button{
     border: none;
+    background-color: white;
 }
-   
+.payment{
+    display: none;
+}
