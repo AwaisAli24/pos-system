@@ -1,135 +1,155 @@
 <%- include('header.ejs') %>
-    <%- include('sidebar.ejs') %>
-        <div class="add">
-            <div class="row cards mt-5 mx-5">
-                <div class="col-md-12">
-                    <div class="d-flex flex-row cards">
-                      <form action="/currentdaysale" method="get">
-                        <button type="submit" class="card-button">
-                        <div class="card mx-5">
-                            <h4 class="card-header bg-primary"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="25" fill="silver" class="bi bi-calendar3 mx-2" viewBox="0 0 16 16">
-  <path d="M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2M1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384 1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857z"/>
-  <path d="M6.5 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2"/>
-</svg>Current Day</h4>
-                            <div class="card-body">
-                                <div>
-                                    <h5 class="card-title">Total Sales: <span class="amount">
-                                            <%=daily.count%>
-                                        </span></h5>
-                                </div>
-                                <div>
-                                    <h6 class="card-title">Total Amount: <span class="amount">
-                                            <%=daily.sum%>
-                                        </span></h6>
-                                </div>
-                            </div>
-                        </div>
-                        </button>
-                        </form>
-                        <form action="/weeksale" method="get">
-                        <button type="submit" class="card-button">
-                        <div class="card mx-5">
-                            <h4 class="card-header bg-primary"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="25" fill="silver" class="bi bi-calendar3 mx-2" viewBox="0 0 16 16">
-  <path d="M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2M1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384 1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857z"/>
-  <path d="M6.5 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2"/>
-</svg>7 Days</h4>
-                            <div class="card-body">
-                                <div>
-                                    <h5 class="card-title">Total Sales: <span class="amount">
-                                            <%=weekly.count%>
-                                        </span></h5>
-                                </div>
-                                <div>
-                                    <h6 class="card-title">Total Amount: <span class="amount">
-                                            <%=weekly.sum%>
-                                        </span></h6>
-                                </div>
-                            </div>
-                        </div>
-                        </button>
-                        </form>
-                        <form action="/monthsale" method="get">
-                        <button type="submit" class="card-button">
-                        <div class="card mx-5">
-                            <h4 class="card-header bg-primary"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="25" fill="silver" class="bi bi-calendar3 mx-2" viewBox="0 0 16 16">
-  <path d="M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2M1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384 1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857z"/>
-  <path d="M6.5 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2"/>
-</svg>30 Days</h4>
-                            <div class="card-body">
-                                <div>
-                                    <h5 class="card-title">Total Sales: <span class="amount">
-                                            <%=monthly.count%>
-                                        </span></h5>
-                                </div>
-                                <div>
-                                    <h6 class="card-title">Total Amount: <span class="amount">
-                                            <%=monthly.sum%>
-                                        </span></h6>
-                                </div>
-                            </div>
-                        </div>
-                        </button>
-                        </form>
-                    </div>
+  <%- include('sidebar.ejs') %>
+    <div class="add">
+      <div class="row cards mt-5 mx-5">
+        <div class="col-md-12">
+          <div class="d-flex flex-row cards">
+            <a href="/currentdaysale" class="card-link">
+              <div class="card">
+                <h4 class="card-header bg-primary"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="25"
+                    fill="silver" class="bi bi-calendar3 mx-2" viewBox="0 0 16 16">
+                    <path
+                      d="M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2M1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384 1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857z" />
+                    <path
+                      d="M6.5 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2" />
+                  </svg>Current Day</h4>
+                <div class="card-body">
+                  <div>
+                    <h5 class="card-title">Total Sales: <span class="amount">
+                        <%=daily.count%>
+                      </span></h5>
+                  </div>
+                  <div>
+                    <h6 class="card-title">Total Amount: <span class="amount">
+                        <%=daily.sum%>
+                      </span></h6>
+                  </div>
                 </div>
-            </div>
-            <div class="row mt-5">
-          <div class="col-md-6">
-            <div class="card2 mx-5 mt-5">
-              <h4 class="card-header bg-success"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="white" class="bi bi-graph-up mx-2" viewBox="0 0 16 16">
-  <path fill-rule="evenodd" d="M0 0h1v15h15v1H0zm14.817 3.113a.5.5 0 0 1 .07.704l-4.5 5.5a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61 4.15-5.073a.5.5 0 0 1 .704-.07"/>
-</svg>Top 10 sale items</h4>
-              <div class="card-body">
-                <table class="table">
-                  <thead>
+              </div>
+            </a>
+            <a href="/weeksale" class="card-link">
+              <div class="card mx-5">
+                <h4 class="card-header bg-primary"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="25"
+                    fill="silver" class="bi bi-calendar3 mx-2" viewBox="0 0 16 16">
+                    <path
+                      d="M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2M1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384 1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857z" />
+                    <path
+                      d="M6.5 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2" />
+                  </svg>7 Days</h4>
+                <div class="card-body">
+                  <div>
+                    <h5 class="card-title">Total Sales: <span class="amount">
+                        <%=weekly.count%>
+                      </span></h5>
+                  </div>
+                  <div>
+                    <h6 class="card-title">Total Amount: <span class="amount">
+                        <%=weekly.sum%>
+                      </span></h6>
+                  </div>
+                </div>
+              </div>
+            </a>
+            <a href="/monthsale" class="card-link">
+              <div class="card mx-5">
+                <h4 class="card-header bg-primary"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="25"
+                    fill="silver" class="bi bi-calendar3 mx-2" viewBox="0 0 16 16">
+                    <path
+                      d="M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2M1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384 1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857z" />
+                    <path
+                      d="M6.5 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2" />
+                  </svg>30 Days</h4>
+                <div class="card-body">
+                  <div>
+                    <h5 class="card-title">Total Sales: <span class="amount">
+                        <%=monthly.count%>
+                      </span></h5>
+                  </div>
+                  <div>
+                    <h6 class="card-title">Total Amount: <span class="amount">
+                        <%=monthly.sum%>
+                      </span></h6>
+                  </div>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="row mt-5">
+        <div class="col-md-6">
+          <div class="card2 mx-5 mt-5">
+            <h4 class="card-header bg-success"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                fill="white" class="bi bi-graph-up mx-2" viewBox="0 0 16 16">
+                <path fill-rule="evenodd"
+                  d="M0 0h1v15h15v1H0zm14.817 3.113a.5.5 0 0 1 .07.704l-4.5 5.5a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61 4.15-5.073a.5.5 0 0 1 .704-.07" />
+              </svg>Top 10 sale items</h4>
+            <div class="card-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Product Name</th>
+                    <th scope="col">Quantity</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <%products.forEach((product,index)=>{ %>
                     <tr>
-                      <th scope="col">#</th>
-                      <th scope="col">Product Name</th>
-                      <th scope="col">Quantity</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <%products.forEach((product,index)=>{ %>
-                    <tr>
-                      <th scope="row"><%=index+1%></th>
-                      <td><%=product.name%></td>
-                      <td><%=product.total_quantity_sold%></td>
+                      <th scope="row">
+                        <%=index+1%>
+                      </th>
+                      <td>
+                        <%=product.name%>
+                      </td>
+                      <td>
+                        <%=product.total_quantity_sold%>
+                      </td>
                     </tr>
                     <%});%>
 
-                  </tbody>
-                </table>
-              </div>
+                </tbody>
+              </table>
             </div>
           </div>
-           <div class="col-md-6">
-            <div class="card2 mx-5 mt-5">
-              <h4 class="card-header bg-danger"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="white" class="bi bi-exclamation-diamond mx-2" viewBox="0 0 16 16">
-  <path d="M6.95.435c.58-.58 1.52-.58 2.1 0l6.515 6.516c.58.58.58 1.519 0 2.098L9.05 15.565c-.58.58-1.519.58-2.098 0L.435 9.05a1.48 1.48 0 0 1 0-2.098zm1.4.7a.495.495 0 0 0-.7 0L1.134 7.65a.495.495 0 0 0 0 .7l6.516 6.516a.495.495 0 0 0 .7 0l6.516-6.516a.495.495 0 0 0 0-.7L8.35 1.134z"/>
-  <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z"/>
-</svg>Least items</h4>
-              <div class="card-body">
-                <table class="table">
-                  <thead>
+        </div>
+        <div class="col-md-6">
+          <div class="card2 mx-5 mt-5">
+            <h4 class="card-header bg-danger"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                fill="white" class="bi bi-exclamation-diamond mx-2" viewBox="0 0 16 16">
+                <path
+                  d="M6.95.435c.58-.58 1.52-.58 2.1 0l6.515 6.516c.58.58.58 1.519 0 2.098L9.05 15.565c-.58.58-1.519.58-2.098 0L.435 9.05a1.48 1.48 0 0 1 0-2.098zm1.4.7a.495.495 0 0 0-.7 0L1.134 7.65a.495.495 0 0 0 0 .7l6.516 6.516a.495.495 0 0 0 .7 0l6.516-6.516a.495.495 0 0 0 0-.7L8.35 1.134z" />
+                <path
+                  d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z" />
+              </svg>Least items</h4>
+            <div class="card-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Product Name</th>
+                    <th scope="col">Quantity</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <%lessProducts.forEach((product,index)=>{%>
                     <tr>
-                      <th scope="col">#</th>
-                      <th scope="col">Product Name</th>
-                      <th scope="col">Quantity</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <%lessProducts.forEach((product,index)=>{%>
-                    <tr>
-                      <th scope="row"><%=index+1%></th>
-                      <td><%=product.name%></td>
-                      <td><%=product.quantity%></td>
+                      <th scope="row">
+                        <%=index+1%>
+                      </th>
+                      <td>
+                        <%=product.name%>
+                      </td>
+                      <td>
+                        <%=product.quantity%>
+                      </td>
                     </tr>
                     <%});%>
-                  </tbody>
-                </table>
-              </div>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
-        </div>
-        <%- include('footer.ejs') %>
+      </div>
+    </div>
+    <%- include('footer.ejs') %>
