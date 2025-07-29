@@ -6,3 +6,10 @@ CREATE TABLE users(
 )
 ALTER TABLE sales
 ADD COLUMN iscash BOOLEAN;
+CREATE TABLE online_payments(
+    id SERIAL PRIMARY KEY,
+    name TEXT,
+    phone_number TEXT,
+    sale_id INT,
+    FOREIGN KEY (sale_id) REFERENCES sales(id)
+)
