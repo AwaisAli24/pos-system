@@ -73,7 +73,6 @@ app.get("/product/view",isAdmin ,async (req, res) => {
   res.render("index.ejs", { products, title: "Inventory" });
 });
 app.post("/product/add",isAdmin ,async (req, res) => {
-  console.log(req.body);
   const { id, name, price, quantity } = req.body;
   const query = await db.query(
     "INSERT INTO products(id,name,price,quantity) VALUES($1,$2,$3,$4)",
@@ -82,14 +81,11 @@ app.post("/product/add",isAdmin ,async (req, res) => {
   res.redirect("/product/view");
 });
 app.post("/product/quantity/add",isAdmin ,async (req, res) => {
-  console.log(req.body);
   const id = req.body.id;
   const addedQuantity = parseInt(req.body.addedQuantity);
   const data = await db.query("SELECT * FROM products where id=$1", [id]);
   let newQuantity = parseInt(data.rows[0].quantity);
-  console.log(newQuantity);
   newQuantity += addedQuantity;
-  console.log(newQuantity);
 
   await db.query("UPDATE products SET quantity=$1 where id=$2", [
     newQuantity,
@@ -118,7 +114,6 @@ app.delete("/product/:id",isAdmin ,async (req, res) => {
 
 //Add Sale (Billing)
 app.post("/billing/add",isLoggedIn ,async (req, res) => {
-  console.log(req.body);
 
   let items = req.body["item[]"];
   let quantities = req.body["quantity[]"];
@@ -167,7 +162,6 @@ app.get("/sale/get",isAdmin ,async (req, res) => {
 app.get("/sale/get/:id",isAdmin ,async (req, res) => {
   const id = req.params.id;
   let data = await db.query("SELECT * FROM sale_item WHERE sale_id=$1", [id]);
-  console.log(data.rows);
 
   let items = [];
   let quantity = [];
@@ -305,19 +299,19 @@ app.get("/daysale/online",async(req,res)=>{
   res.render("sales.ejs", { sales: data.rows, title: "Today's online Sale" ,online:1});
 });
 app.get("/weeksale/cash",async(req,res)=>{
-  const data = await db.query("SELECT * FROM sales WHERE date >= CURRENT_DATE - INTERVAL '7 days'")
+  const data = await db.query("SELECT * FROM sales WHERE date >= CURRENT_DATE - INTERVAL '7 days' and iscash=true")
   res.render("sales.ejs", { sales: data.rows, title: "Week's Cash Sale" });
 });
 app.get("/weeksale/online",async(req,res)=>{
-  const data = await db.query("SELECT * FROM sales INNER JOIN online_payments o ON sales.id=o.sale_id WHERE date >= CURRENT_DATE - INTERVAL '7 days'")
+  const data = await db.query("SELECT * FROM sales INNER JOIN online_payments o ON sales.id=o.sale_id WHERE date >= CURRENT_DATE - INTERVAL '7 days' and iscash=false;")
   res.render("sales.ejs", { sales: data.rows, title: "Week's online Sale" ,online:1});
 });
 app.get("/monthsale/cash",async(req,res)=>{
-  const data = await db.query("SELECT * FROM sales WHERE date >= CURRENT_DATE - INTERVAL '30 days';")
+  const data = await db.query("SELECT * FROM sales WHERE date >= CURRENT_DATE - INTERVAL '30 days' and iscash=true;")
   res.render("sales.ejs", { sales: data.rows, title: "Week's Cash Sale" });
 });
 app.get("/monthsale/online",async(req,res)=>{
-  const data = await db.query("SELECT * FROM sales INNER JOIN online_payments o ON sales.id=o.sale_id WHERE date >= CURRENT_DATE - INTERVAL '30 days';")
+  const data = await db.query("SELECT * FROM sales INNER JOIN online_payments o ON sales.id=o.sale_id WHERE date >= CURRENT_DATE - INTERVAL '30 days' and iscash=false;;")
   res.render("sales.ejs", { sales: data.rows, title: "Week's online Sale" ,online:1});
 });
 app.listen(PORT, () => {
