@@ -36,7 +36,7 @@
                 </table>
                 <!-- </div> -->
                  <div class="discount">
-                    <input type="text" class="form-control mt-5 mx-5" placeholder="Discount">
+                    <input type="number" id="discount" class="form-control mt-5 mx-5" placeholder="Discount">
                  </div>
                 <div class="cardg mx-5 mt-5">
                     <div class="card-body">
@@ -128,7 +128,7 @@
             const modalBody = document.querySelector(".modal-body");
             const checkout = document.querySelector(".checkout");
             const grandTotal1 = document.querySelector(".grand-total1");
-
+            const discount = document.querySelector("#discount");
             search.addEventListener("keydown", (e) => {
                 if (e.key === "Enter") {
                     const input = search.value.trim();
@@ -220,29 +220,43 @@
                 });
             }
             function updatePrice() {
-                const priceRows = document.querySelectorAll(".total");
-                let grandTotal = 0;
-                priceRows.forEach((price) => {
-                    grandTotal += (parseInt(price.innerText));
-                })
-                total.innerText = grandTotal;
-                totalPrice.value = grandTotal;
-                return grandTotal;
-            }
+    const priceRows = document.querySelectorAll(".total");
+    let grandTotal = 0;
+    priceRows.forEach((price) => {
+        grandTotal += parseInt(price.innerText);
+    });
+
+    const discountValue = parseInt(discount.value) || 0;
+    const discountedTotal = grandTotal - discountValue;
+
+    total.innerText = discountedTotal;
+    totalPrice.value = discountedTotal;
+
+    return discountedTotal;
+}
+
             checkout.addEventListener("click", () => {
-                modalBody.appendChild(itemTable);
-                grandTotal1.innerText = updatePrice();
-                itemTable.removeChild();
-            })
+    const clonedTable = itemTable.cloneNode(true); // true for deep clone (includes children)
+    modalBody.innerHTML = ''; // Clear previous content
+    modalBody.appendChild(clonedTable);
+    grandTotal1.innerText = updatePrice(); // Updates with discount
+});
+
+
             let online = document.querySelector("#flexRadioDefault1");
             let payment = document.querySelector(".payment");
             let cash = document.querySelector("#flexRadioDefault2");
             online.addEventListener("click", () => {
                 payment.style.display = "block";
-            })
+            });
             cash.addEventListener("click", () => {
                 payment.style.display = "none";
-            })
+            });
+            discount.addEventListener("input", () => {
+    updatePrice(); // it will now automatically apply the discount
+});
+
+
         </script>
 
         <%- include('footer.ejs') %>
