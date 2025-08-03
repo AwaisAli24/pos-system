@@ -1,3 +1,4 @@
+<%let counter=1%>
 <%- include('header.ejs') %>
   <%- include('sidebar.ejs') %>
     <div class="add">
@@ -62,7 +63,7 @@
             <%if(product.quantity>0){%>
             <tr>
               <th scope="row">
-                <%=index+1%>
+                <%=counter++%>
               </th>
               <td colspan="2">
                 <%=product.name%>
