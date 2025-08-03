@@ -21,18 +21,7 @@ app.use(session({
 }));
 
 
-const now = new Date();
 
-const options = {
-  year: "numeric",
-  month: "long",
-  day: "numeric",
-  hour: "numeric",
-  minute: "2-digit",
-  hour12: true,
-};
-
-const formattedDate = now.toLocaleString("en-US", options);
 
 const db = new pg.Client({
   user: process.env.USER1,
@@ -114,12 +103,24 @@ app.delete("/product/:id",isAdmin ,async (req, res) => {
 
 //Add Sale (Billing)
 app.post("/billing/add",isLoggedIn ,async (req, res) => {
-
+  console.log(req.body);
   let items = req.body["item[]"];
   let quantities = req.body["quantity[]"];
   let amount = req.body.total;
   let name = req.body.name;
   let phone = req.body.phone;
+  const now = new Date();
+
+const options = {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+  hour: "numeric",
+  minute: "2-digit",
+  hour12: true,
+};
+
+const formattedDate = now.toLocaleString("en-US", options);
   let isCash = (req.body.method=='cash') ? true:false;
   if (!Array.isArray(items)) {
     items = [items];

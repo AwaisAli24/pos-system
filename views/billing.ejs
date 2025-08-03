@@ -35,9 +35,9 @@
                     </tbody>
                 </table>
                 <!-- </div> -->
-                 <div class="discount">
+                <div class="discount">
                     <input type="number" id="discount" class="form-control mt-5 mx-5" placeholder="Discount">
-                 </div>
+                </div>
                 <div class="cardg mx-5 mt-5">
                     <div class="card-body">
                         <div class="">
@@ -219,8 +219,8 @@
                     row.children[0].textContent = index + 1;
                 });
             }
-            function updatePrice() {
-    const priceRows = document.querySelectorAll(".total");
+            function updatePrice(context = document) {
+    const priceRows = context.querySelectorAll(".total");
     let grandTotal = 0;
     priceRows.forEach((price) => {
         grandTotal += parseInt(price.innerText);
@@ -229,18 +229,43 @@
     const discountValue = parseInt(discount.value) || 0;
     const discountedTotal = grandTotal - discountValue;
 
-    total.innerText = discountedTotal;
-    totalPrice.value = discountedTotal;
+    // Only update DOM if we're using the main document
+    if (context === document) {
+        total.innerText = discountedTotal;
+        totalPrice.value = discountedTotal;
+    }
 
     return discountedTotal;
 }
 
+
             checkout.addEventListener("click", () => {
-    const clonedTable = itemTable.cloneNode(true); // true for deep clone (includes children)
     modalBody.innerHTML = ''; // Clear previous content
-    modalBody.appendChild(clonedTable);
-    grandTotal1.innerText = updatePrice(); // Updates with discount
+
+    const clonedBody = tableBody.cloneNode(true); // clone only rows
+    const modalTable = document.createElement("table");
+    modalTable.className = "table table-striped";
+
+    const thead = document.createElement("thead");
+    thead.innerHTML = `
+        <tr>
+            <th>#</th>
+            <th>Product Name</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Total</th>
+        </tr>
+    `;
+
+    modalTable.appendChild(thead);
+    modalTable.appendChild(clonedBody);
+    modalBody.appendChild(modalTable);
+
+    // Use updatePrice with the cloned table only (not full DOM)
+    grandTotal1.innerText = updatePrice(modalTable);
 });
+
+
 
 
             let online = document.querySelector("#flexRadioDefault1");
@@ -253,8 +278,8 @@
                 payment.style.display = "none";
             });
             discount.addEventListener("input", () => {
-    updatePrice(); // it will now automatically apply the discount
-});
+                updatePrice(); // it will now automatically apply the discount
+            });
 
 
         </script>
