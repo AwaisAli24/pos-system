@@ -1,7 +1,7 @@
 const express = require("express");
 const pg = require("pg");
 const methodOverride = require("method-override");
-const dotenv = require('dotenv');
+const dotenv = require("dotenv");
 const bcrypt = require("bcrypt");
 const session = require("express-session");
 
@@ -13,15 +13,14 @@ dotenv.config();
 app.use(express.urlencoded());
 app.use(methodOverride("_method"));
 app.use(express.static("public"));
-app.use(session({
-  secret: "yourSecretKey",
-  resave: false,
-  saveUninitialized: false,
-  cookie: { secure: false }
-}));
-
-
-
+app.use(
+  session({
+    secret: "yourSecretKey",
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: false },
+  })
+);
 
 const db = new pg.Client({
   user: process.env.USER1,
@@ -48,12 +47,11 @@ function isAdmin(req, res, next) {
   }
 }
 
-
 // Inventory routes
 app.get("/", (req, res) => {
   res.render("index.ejs");
 });
-app.get("/product/view",isAdmin ,async (req, res) => {
+app.get("/product/view", isAdmin, async (req, res) => {
   const data = await db.query("Select * FROM products");
   let products = data.rows;
   products.sort((a, b) =>
@@ -61,7 +59,7 @@ app.get("/product/view",isAdmin ,async (req, res) => {
   );
   res.render("index.ejs", { products, title: "Inventory" });
 });
-app.post("/product/add",isAdmin ,async (req, res) => {
+app.post("/product/add", isAdmin, async (req, res) => {
   const { id, name, price, quantity } = req.body;
   const query = await db.query(
     "INSERT INTO products(id,name,price,quantity) VALUES($1,$2,$3,$4)",
@@ -69,7 +67,7 @@ app.post("/product/add",isAdmin ,async (req, res) => {
   );
   res.redirect("/product/view");
 });
-app.post("/product/quantity/add",isAdmin ,async (req, res) => {
+app.post("/product/quantity/add", isAdmin, async (req, res) => {
   const id = req.body.id;
   const addedQuantity = parseInt(req.body.addedQuantity);
   const data = await db.query("SELECT * FROM products where id=$1", [id]);
@@ -82,7 +80,7 @@ app.post("/product/quantity/add",isAdmin ,async (req, res) => {
   ]);
   res.redirect("/product/view");
 });
-app.put("/product/:id",isAdmin ,async (req, res) => {
+app.put("/product/:id", isAdmin, async (req, res) => {
   const id = req.params.id;
   const { name, price, quantity } = req.body;
   const query = await db.query(
@@ -91,7 +89,7 @@ app.put("/product/:id",isAdmin ,async (req, res) => {
   );
   res.redirect("/product/view");
 });
-app.delete("/product/:id",isAdmin ,async (req, res) => {
+app.delete("/product/:id", isAdmin, async (req, res) => {
   const id = parseInt(req.params.id);
   const query = await db.query("UPDATE products SET quantity=$1 WHERE id=$2", [
     0,
@@ -102,7 +100,7 @@ app.delete("/product/:id",isAdmin ,async (req, res) => {
 //Sale Routes
 
 //Add Sale (Billing)
-app.post("/billing/add",isLoggedIn ,async (req, res) => {
+app.post("/billing/add", isLoggedIn, async (req, res) => {
   console.log(req.body);
   let items = req.body["item[]"];
   let quantities = req.body["quantity[]"];
@@ -111,17 +109,17 @@ app.post("/billing/add",isLoggedIn ,async (req, res) => {
   let phone = req.body.phone;
   const now = new Date();
 
-const options = {
-  year: "numeric",
-  month: "long",
-  day: "numeric",
-  hour: "numeric",
-  minute: "2-digit",
-  hour12: true,
-};
+  const options = {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  };
 
-const formattedDate = now.toLocaleString("en-US", options);
-  let isCash = (req.body.method=='cash') ? true:false;
+  const formattedDate = now.toLocaleString("en-US", options);
+  let isCash = req.body.method == "cash" ? true : false;
   if (!Array.isArray(items)) {
     items = [items];
   }
@@ -140,11 +138,14 @@ const formattedDate = now.toLocaleString("en-US", options);
 
   let data = await db.query(
     "INSERT INTO sales(date,amount,iscash)VALUES($1,$2,$3) RETURNING *",
-    [formattedDate, parseInt(amount),isCash]
+    [formattedDate, parseInt(amount), isCash]
   );
 
   let sale_id = data.rows[0].id;
-  const query = await db.query("INSERT INTO online_payments(name,phone_number,sale_id) VALUES($1,$2,$3) ",[name,phone,sale_id]);
+  const query = await db.query(
+    "INSERT INTO online_payments(name,phone_number,sale_id) VALUES($1,$2,$3) ",
+    [name, phone, sale_id]
+  );
   for (const [index, item] of items.entries()) {
     await db.query(
       "INSERT INTO sale_item(product_id, sale_id,quantity) VALUES ($1, $2, $3)",
@@ -155,12 +156,12 @@ const formattedDate = now.toLocaleString("en-US", options);
   res.redirect("/billing");
 });
 //Get all sale record
-app.get("/sale/get",isAdmin ,async (req, res) => {
+app.get("/sale/get", isAdmin, async (req, res) => {
   const data = await db.query("SELECT * FROM sales");
   res.render("sales.ejs", { sales: data.rows, title: "Sales" });
 });
 //Get a specific sale record
-app.get("/sale/get/:id",isAdmin ,async (req, res) => {
+app.get("/sale/get/:id", isAdmin, async (req, res) => {
   const id = req.params.id;
   let data = await db.query("SELECT * FROM sale_item WHERE sale_id=$1", [id]);
 
@@ -184,12 +185,12 @@ app.get("/sale/get/:id",isAdmin ,async (req, res) => {
     title: "Sales",
   });
 });
-app.get("/billing",isLoggedIn ,async (req, res) => {
+app.get("/billing", isLoggedIn, async (req, res) => {
   let data = await db.query("SELECT * FROM products");
   res.render("billing.ejs", { products: data.rows, title: "Billing" });
 });
 // Dashboard
-app.get("/dashboard",isLoggedIn ,async (req, res) => {
+app.get("/dashboard", isLoggedIn, async (req, res) => {
   const dailySale = await db.query(
     "SELECT SUM(amount),COUNT(id) FROM sales WHERE date >=CURRENT_DATE;"
   );
@@ -212,16 +213,18 @@ app.get("/dashboard",isLoggedIn ,async (req, res) => {
     weekly: weeklySale.rows[0],
     monthly: monthlySale.rows[0],
     products: products.rows,
-    lessProducts: lessProducts.rows
+    lessProducts: lessProducts.rows,
   });
 });
-app.get("/login",(req,res)=>{
-  res.render("login.ejs",{title:"Login"})
+app.get("/login", (req, res) => {
+  res.render("login.ejs", { title: "Login" });
 });
 app.post("/login", async (req, res) => {
   const { username, password } = req.body;
 
-  const result = await db.query("SELECT * FROM users WHERE username=$1", [username]);
+  const result = await db.query("SELECT * FROM users WHERE username=$1", [
+    username,
+  ]);
 
   if (result.rows.length === 0) {
     return res.send("User not found");
@@ -235,14 +238,14 @@ app.post("/login", async (req, res) => {
     req.session.user = {
       id: user.id,
       username: user.username,
-      isAdmin: user.isadmin
+      isAdmin: user.isadmin,
     };
     return res.redirect("/dashboard");
   } else {
     return res.send("Invalid password");
   }
 });
-app.get("/seed",async(req,res)=>{
+app.get("/seed", async (req, res) => {
   const adminUsername = "admin";
   const userUsername = "user";
 
@@ -251,69 +254,139 @@ app.get("/seed",async(req,res)=>{
 
   try {
     // Check if already exists
-    const existing = await db.query("SELECT * FROM users WHERE username IN ($1, $2)", [adminUsername, userUsername]);
+    const existing = await db.query(
+      "SELECT * FROM users WHERE username IN ($1, $2)",
+      [adminUsername, userUsername]
+    );
 
-    const usernames = existing.rows.map(row => row.username);
+    const usernames = existing.rows.map((row) => row.username);
 
     if (!usernames.includes(adminUsername)) {
-      await db.query("INSERT INTO users (username, password, isAdmin) VALUES ($1, $2, $3)", [adminUsername, adminPassword, true]);
+      await db.query(
+        "INSERT INTO users (username, password, isAdmin) VALUES ($1, $2, $3)",
+        [adminUsername, adminPassword, true]
+      );
       console.log("Admin seeded");
     }
 
     if (!usernames.includes(userUsername)) {
-      await db.query("INSERT INTO users (username, password, isAdmin) VALUES ($1, $2, $3)", [userUsername, userPassword, false]);
+      await db.query(
+        "INSERT INTO users (username, password, isAdmin) VALUES ($1, $2, $3)",
+        [userUsername, userPassword, false]
+      );
       console.log("User seeded");
     }
   } catch (err) {
     console.error("Error seeding users:", err);
   }
 });
-app.post("/logout",(req,res)=>{
+app.post("/logout", (req, res) => {
   req.session.destroy();
   res.redirect("/login");
 });
-app.get("/currentdaysale",async(req,res)=>{
+app.get("/currentdaysale", async (req, res) => {
   const data = await db.query("SELECT * FROM sales WHERE date >=CURRENT_DATE");
-  const cashTotal = await db.query("SELECT SUM(amount),count(id) FROM sales WHERE date >=CURRENT_DATE and iscash=true;;");
-  const mobileTotal = await db.query("SELECT SUM(amount),count(id) FROM sales WHERE date >=CURRENT_DATE and iscash=false;");
-  
-  res.render("sales.ejs", { sales: data.rows,cashSum:cashTotal.rows[0],mobileSum:mobileTotal.rows[0] ,flag:1, title: "Today's Sale",time:"daysale"});
+  const cashTotal = await db.query(
+    "SELECT SUM(amount),count(id) FROM sales WHERE date >=CURRENT_DATE and iscash=true;;"
+  );
+  const mobileTotal = await db.query(
+    "SELECT SUM(amount),count(id) FROM sales WHERE date >=CURRENT_DATE and iscash=false;"
+  );
+
+  res.render("sales.ejs", {
+    sales: data.rows,
+    cashSum: cashTotal.rows[0],
+    mobileSum: mobileTotal.rows[0],
+    flag: 1,
+    title: "Today's Sale",
+    time: "daysale",
+  });
 });
-app.get("/weeksale",async(req,res)=>{
-  const data = await db.query("SELECT * FROM sales WHERE date >= CURRENT_DATE - INTERVAL '7 days'");
-  const cashTotal = await db.query("SELECT SUM(amount),count(id) FROM sales WHERE date >= CURRENT_DATE - INTERVAL '7 days' and iscash=true;");
-  const mobileTotal = await db.query("SELECT SUM(amount),count(id) FROM sales WHERE date >= CURRENT_DATE - INTERVAL '7 days' and iscash=false;");
-  res.render("sales.ejs", { sales: data.rows, cashSum:cashTotal.rows[0],mobileSum:mobileTotal.rows[0] ,flag:1,title: "Weekly sale",time:"weeksale" });
+app.get("/weeksale", async (req, res) => {
+  const data = await db.query(
+    "SELECT * FROM sales WHERE date >= CURRENT_DATE - INTERVAL '7 days'"
+  );
+  const cashTotal = await db.query(
+    "SELECT SUM(amount),count(id) FROM sales WHERE date >= CURRENT_DATE - INTERVAL '7 days' and iscash=true;"
+  );
+  const mobileTotal = await db.query(
+    "SELECT SUM(amount),count(id) FROM sales WHERE date >= CURRENT_DATE - INTERVAL '7 days' and iscash=false;"
+  );
+  res.render("sales.ejs", {
+    sales: data.rows,
+    cashSum: cashTotal.rows[0],
+    mobileSum: mobileTotal.rows[0],
+    flag: 1,
+    title: "Weekly sale",
+    time: "weeksale",
+  });
 });
-app.get("/monthsale",async(req,res)=>{
-  const data = await db.query("SELECT * FROM sales WHERE date >= CURRENT_DATE - INTERVAL '30 days';");
-  const cashTotal = await db.query("SELECT SUM(amount),count(id) FROM sales WHERE date >= CURRENT_DATE - INTERVAL '30 days' and iscash=true;");
-  const mobileTotal = await db.query("SELECT SUM(amount),count(id) FROM sales WHERE date >= CURRENT_DATE - INTERVAL '30 days' and iscash=false;");
-  res.render("sales.ejs", { sales: data.rows, cashSum:cashTotal.rows[0],mobileSum:mobileTotal.rows[0] ,flag:1,title: "Monthly sale",time:"monthsale" });
+app.get("/monthsale", async (req, res) => {
+  const data = await db.query(
+    "SELECT * FROM sales WHERE date >= CURRENT_DATE - INTERVAL '30 days';"
+  );
+  const cashTotal = await db.query(
+    "SELECT SUM(amount),count(id) FROM sales WHERE date >= CURRENT_DATE - INTERVAL '30 days' and iscash=true;"
+  );
+  const mobileTotal = await db.query(
+    "SELECT SUM(amount),count(id) FROM sales WHERE date >= CURRENT_DATE - INTERVAL '30 days' and iscash=false;"
+  );
+  res.render("sales.ejs", {
+    sales: data.rows,
+    cashSum: cashTotal.rows[0],
+    mobileSum: mobileTotal.rows[0],
+    flag: 1,
+    title: "Monthly sale",
+    time: "monthsale",
+  });
 });
-app.get("/daysale/cash",async(req,res)=>{
-  const data = await db.query("SELECT * FROM sales WHERE date >=CURRENT_DATE and iscash=true;")
+app.get("/daysale/cash", async (req, res) => {
+  const data = await db.query(
+    "SELECT * FROM sales WHERE date >=CURRENT_DATE and iscash=true;"
+  );
   res.render("sales.ejs", { sales: data.rows, title: "Today's Cash Sale" });
 });
-app.get("/daysale/online",async(req,res)=>{
-  const data = await db.query("SELECT * FROM sales INNER JOIN online_payments o ON sales.id=o.sale_id WHERE date >=CURRENT_DATE and iscash=false;")
-  res.render("sales.ejs", { sales: data.rows, title: "Today's online Sale" ,online:1});
+app.get("/daysale/online", async (req, res) => {
+  const data = await db.query(
+    "SELECT * FROM sales INNER JOIN online_payments o ON sales.id=o.sale_id WHERE date >=CURRENT_DATE and iscash=false;"
+  );
+  res.render("sales.ejs", {
+    sales: data.rows,
+    title: "Today's online Sale",
+    online: 1,
+  });
 });
-app.get("/weeksale/cash",async(req,res)=>{
-  const data = await db.query("SELECT * FROM sales WHERE date >= CURRENT_DATE - INTERVAL '7 days' and iscash=true")
+app.get("/weeksale/cash", async (req, res) => {
+  const data = await db.query(
+    "SELECT * FROM sales WHERE date >= CURRENT_DATE - INTERVAL '7 days' and iscash=true"
+  );
   res.render("sales.ejs", { sales: data.rows, title: "Week's Cash Sale" });
 });
-app.get("/weeksale/online",async(req,res)=>{
-  const data = await db.query("SELECT * FROM sales INNER JOIN online_payments o ON sales.id=o.sale_id WHERE date >= CURRENT_DATE - INTERVAL '7 days' and iscash=false;")
-  res.render("sales.ejs", { sales: data.rows, title: "Week's online Sale" ,online:1});
+app.get("/weeksale/online", async (req, res) => {
+  const data = await db.query(
+    "SELECT * FROM sales INNER JOIN online_payments o ON sales.id=o.sale_id WHERE date >= CURRENT_DATE - INTERVAL '7 days' and iscash=false;"
+  );
+  res.render("sales.ejs", {
+    sales: data.rows,
+    title: "Week's online Sale",
+    online: 1,
+  });
 });
-app.get("/monthsale/cash",async(req,res)=>{
-  const data = await db.query("SELECT * FROM sales WHERE date >= CURRENT_DATE - INTERVAL '30 days' and iscash=true;")
+app.get("/monthsale/cash", async (req, res) => {
+  const data = await db.query(
+    "SELECT * FROM sales WHERE date >= CURRENT_DATE - INTERVAL '30 days' and iscash=true;"
+  );
   res.render("sales.ejs", { sales: data.rows, title: "Week's Cash Sale" });
 });
-app.get("/monthsale/online",async(req,res)=>{
-  const data = await db.query("SELECT * FROM sales INNER JOIN online_payments o ON sales.id=o.sale_id WHERE date >= CURRENT_DATE - INTERVAL '30 days' and iscash=false;;")
-  res.render("sales.ejs", { sales: data.rows, title: "Week's online Sale" ,online:1});
+app.get("/monthsale/online", async (req, res) => {
+  const data = await db.query(
+    "SELECT * FROM sales INNER JOIN online_payments o ON sales.id=o.sale_id WHERE date >= CURRENT_DATE - INTERVAL '30 days' and iscash=false;;"
+  );
+  res.render("sales.ejs", {
+    sales: data.rows,
+    title: "Week's online Sale",
+    online: 1,
+  });
 });
 app.listen(PORT, () => {
   console.log(`Server listening at port ${PORT}`);
