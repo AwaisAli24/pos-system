@@ -283,5 +283,75 @@
 
 
         </script>
+        <script>
+    const savedCart = <%- JSON.stringify(savedCart || []) %>;
+
+    // Load saved cart if exists
+    if (savedCart.length > 0) {
+        for (const item of savedCart) {
+            const product = allProducts.find(p => p.id === item.id);
+            if (!product) continue;
+            addedProducts[product.id] = true;
+
+            const row = document.createElement("tr");
+            row.setAttribute("data-id", product.id);
+
+            row.innerHTML = `
+                <td>${tableBody.children.length + 1}</td>
+                <td>
+                    ${product.name}
+                    <input type="hidden" name="item[]" value="${product.id}">
+                </td>
+                <td>${product.price}</td>
+                <td>
+                    <input type="number" name="quantity[]" value="${item.qty}" min="1" class="qty-input">
+                </td>
+                <td><button class="btn btn-danger btn-sm delete-btn">Delete</button></td>
+                <td class="total">${product.price * item.qty}</td>
+            `;
+
+            // Delete and quantity change logic
+            row.querySelector(".delete-btn").addEventListener("click", () => {
+                delete addedProducts[product.id];
+                row.remove();
+                updatePrice();
+                updateRowNumbers();
+            });
+            row.querySelector(".qty-input").addEventListener("input", (e) => {
+                const qty = parseInt(e.target.value) || 0;
+                if (qty > product.quantity) {
+                    alert("Product is not available reduce the quantity");
+                    e.target.value = product.quantity;
+                    return;
+                }
+                row.querySelector(".total").textContent = qty * product.price;
+                updatePrice()
+            });
+
+            tableBody.appendChild(row);
+        }
+        updatePrice();
+    }
+
+    // Save cart to session every 10 seconds
+    setInterval(() => {
+        const rows = tableBody.querySelectorAll("tr");
+        const cartItems = [];
+        rows.forEach(row => {
+            const id = row.getAttribute("data-id");
+            const qty = row.querySelector(".qty-input").value;
+            cartItems.push({ id, qty });
+        });
+
+        fetch("/billing/save-cart", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ cartItems })
+        });
+    }, 1000);
+</script>
+
 
         <%- include('footer.ejs') %>

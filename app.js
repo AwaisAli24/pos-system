@@ -10,6 +10,7 @@ const PORT = 3000;
 const app = express();
 dotenv.config();
 
+app.use(express.json());
 app.use(express.urlencoded());
 app.use(methodOverride("_method"));
 app.use(express.static("public"));
@@ -49,7 +50,7 @@ function isAdmin(req, res, next) {
 
 // Inventory routes
 app.get("/", (req, res) => {
-  res.render("index.ejs");
+  res.render("index.ejs",{title:"Inventory"});
 });
 app.get("/product/view", isAdmin, async (req, res) => {
   const data = await db.query("Select * FROM products");
@@ -186,9 +187,21 @@ app.get("/sale/get/:id", isAdmin, async (req, res) => {
   });
 });
 app.get("/billing", isLoggedIn, async (req, res) => {
-  let data = await db.query("SELECT * FROM products");
-  res.render("billing.ejs", { products: data.rows, title: "Billing" });
+  const data = await db.query("SELECT * FROM products");
+
+  // Clear expired session data (after 5 minutes)
+  if (req.session.cartTime && Date.now() - req.session.cartTime > 5 * 60 * 1000) {
+    req.session.billingItems = null;
+    req.session.cartTime = null;
+  }
+
+  res.render("billing.ejs", {
+    products: data.rows,
+    title: "Billing",
+    savedCart: req.session.billingItems || []
+  });
 });
+
 // Dashboard
 app.get("/dashboard", isLoggedIn, async (req, res) => {
   const dailySale = await db.query(
@@ -388,6 +401,12 @@ app.get("/monthsale/online", async (req, res) => {
     online: 1,
   });
 });
+app.post("/billing/save-cart", isLoggedIn, (req, res) => {
+  req.session.billingItems = req.body.cartItems;
+  req.session.cartTime = Date.now(); // Track time of save
+  res.sendStatus(200);
+});
+
 app.listen(PORT, () => {
   console.log(`Server listening at port ${PORT}`);
 });
